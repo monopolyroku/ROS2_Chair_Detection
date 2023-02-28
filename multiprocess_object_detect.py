@@ -1,7 +1,7 @@
 
 
 # Author: monopolyroku (colin)
-# Code has been modified by me to utilize the threading library to serialize the data from the WebCam
+# Code has been modified by me to utilize the multiprocessing library to serialize the data from the WebCam
 # For more details refer to the README.md file in the github repo
 
 # Code apapted from tensorflow-human-detection by madhawav and library-seat-detection by RexxarCHL
