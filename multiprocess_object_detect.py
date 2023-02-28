@@ -1,4 +1,5 @@
 
+
 # Author: monopolyroku (colin)
 # Code has been modified by me to utilize the threading library to serialize the data from the WebCam
 # For more details refer to the README.md file in the github repo
@@ -10,11 +11,13 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import time
-import threading as thread
+import multiprocessing as mp 
 from collections import namedtuple
 
 CvColor = namedtuple('CvColor', 'b g r')
-BLUE = CvColor(255, 0, 0)
+# BLUE = CvColor(255, 0, 0)
+# GREEN = CvColor(0, 255, 0)
+# ORANGE = CvColor(0, 128, 255)
 RED = CvColor(0, 0, 255)
 
 
@@ -57,14 +60,12 @@ class ObjectDetector:
         print("Elapsed Time:", end_time-start_time)
 
         im_height, im_width, _ = image.shape
-        boxes_list = [None for i in range(boxes.shape[1])]
-        for i in range(boxes.shape[1]):
-            boxes_list[i] = (
-                int(boxes[0, i, 0] * im_height),
-                int(boxes[0, i, 1] * im_width),
-                int(boxes[0, i, 2] * im_height),
-                int(boxes[0, i, 3] * im_width))
 
+        # Code below uses numpy broadcasting to apply scaling factor to all elements at once
+        # then using astype to cast an array to a spefied data type in this case an integer
+        boxes_list = np.array(boxes[0, :boxes.shape[1], :4] * np.array([im_height, im_width, im_height, im_width])).astype(int)
+
+        # Returns the output of the object detection algo for a single input frame
         return boxes_list, scores[0].tolist(), [int(x) for x in classes[0].tolist()], int(num[0])
 
     def close(self):
@@ -77,28 +78,47 @@ class ObjectDetector:
 
 class WebCamStream:
     def __init__(self, src=0):
-        # initialized the webcam stream and read the first frame from it 
-        self.stream = cv2.VideoCapture(src)
-        (self.grabbed, self.frame) = self.stream.read()
+        self.src = src
         # initialized variable used to indicate if thread should be stopped
         self.stopped = False
+        # initialize frame to None 
+        self.frame = None
+        # initialize a multiprocessing lock
+        self.lock = mp.Lock()
 
     def start(self):
-        # Places the update method in a separate thread from main python script
-        # thus reducing latency and increasing FPS 
-        thread.Thread(target=self.update, args=()).start()
+        # creates a new multiprocessing process specifies that target of the process should be update method 
+        p = mp.Process(target=self.update, args=())
+        # process will run as a daemon process and automatically terminate when main program finishes
+        p.daemon = True
+        p.start()
         return self   
 
     def update(self):
         # keep looping till thread is stopped 
+        # reads frames from camera and stores in self.frame
+        # sets self.grabbed flag to indicate new frame is available
+        # allows read method to efficiently retrieve it as soon as its available 
+        stream = cv2.VideoCapture(self.src)
+
         while True:
             if self.stopped:
+                stream.release()
                 return
-
-            (self.grabbed, self.frame) = self.stream.read()       
+            
+            (grabbed, frame) = stream.read()
+            if grabbed:
+                with self.lock:
+                    self.frame = frame
+                #(self.grabbed, self.frame) = self.stream.read()       
 
     def read(self):
         # returns frame most recently read
+        while self.frame is None:
+            pass
+        # returns the most recently read frame 
+        with self.lock:
+            frame = self.frame
         return self.frame
 
     def stop(self):
@@ -113,14 +133,28 @@ if __name__ == "__main__":
     threshold = 0.65
 
     # starts a live video feed but faster (hopefully)
-    vs = WebCamStream(src=0).start()
+    vs = WebCamStream(src=0)
+    vs.start()
+
+    # Creates a frame of above defined values for video
+    result = cv2.VideoWriter('sod.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 20, (640,480))
+
+    # Initialise the amount of processors being used by the .pool function to 4
+    num_process = 4
+    pool = mp.Pool(num_process)
 
 
     while True:
         # success, img = cap.read()
         frame = vs.read()
 
-        boxes, scores, classes, num = odapi.processFrame(frame)
+        # apply ProcessFrame() method to each frame in parallel using multiprocessing
+        # creates a list 'results' by applying odapi.processFrame method to frame object in parallel using pool map method
+        # map method applies function to a sequence of arguments and returns a list of results of function applied to each argument
+        # odapi.processFrame takes a single argument image (frame from webcam stream) and returns a tuple containing info about object detected
+        results = pool.map(odapi.processFrame, [frame])
+
+        boxes, scores, classes, num = results[0]
 
         for i in range(len(boxes)):
             box = boxes[i]
@@ -131,18 +165,28 @@ if __name__ == "__main__":
                     0.9, RED)
                 cv2.rectangle(
                     frame,
-                    (box[1], box[0]),
+                    (box[1], box[0]), 
                     (box[3], box[2]),
                     RED, 2)
 
 
-        cv2.imshow("preview", frame)
-        # cv2.imshow("preview", img)
+        # Writes processed frame into the file sod.mp4
+        result.write(frame)
+
+        # cv2.imshow("preview", frame)
+
         key = cv2.waitKey(1)
         if key & 0xFF == ord('q'):
             break
 
+
     # releases the frame
+    result.release()
+    # .close tells pool not to accept any new jobs
+    pool.close()
+    # .join tells pool to wait until all jobs finished then exit, cleaning up the pool
+    pool.join()
+    odapi.close()
     vs.stop()
     cv2.destroyAllWindows()
 
