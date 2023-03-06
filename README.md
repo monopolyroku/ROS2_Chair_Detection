@@ -48,9 +48,10 @@ However, do note that running the same program on different hardware will affect
 Run the set of instructions in the README.md in this [repo](https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/raspberry_pi) preferably in a Linux environment, make sure everything works before moving on to the next step.
 
 1. Place the src folder in a new directory, ensure that ROS2 is initialised in that folder
-2. Use ```colcon build ``` to build the package within the src folder, creating the install, build and log folders in the process
-3. For good measure ``` source ~/.bashrc ``` and ``` source install/setup.bash ``` to refresh the terminal bash file and setup bash file after the new build
-4. Use the command ``` ros2 run chair_detect chair_detect ``` to run the chair_detect node and a window should pop up showing your camera's pov
+2. Under function *main()* edit the '--model' default path to the the efficientdet_lite0.tflite in your personal system
+3. Use ```colcon build ``` to build the package within the src folder, creating the install, build and log folders in the process
+4. For good measure ``` source ~/.bashrc ``` and ``` source install/setup.bash ``` to refresh the terminal bash file and setup bash file after the new build
+5. Use the command ``` ros2 run chair_detect chair_detect ``` to run the chair_detect node and a window should pop up showing your camera's pov
 
 
 ## To take note of during integration
