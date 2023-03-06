@@ -16,14 +16,15 @@ The technologies used in this project are as follows:
 There are two options whenever it comes to object detection models, doing end-to-end training to create a new model or using pre-trained models. As the time and resources available were not available to implement end-to-end training, the pre-trained model route was preferred, especially since there is a [detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md) provided by tensorflow, a free and open-source software library for machine learning and artificial intelligence.
 
 ##### Faster R-CNN Inception V2
-[Faster R-CNN Inception v2 trained on COCO dataset](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md)
+
+Based on a [initial project](https://github.com/RexxarCHL/library-seat-detection) done by github user RexxarCHL, the [Faster R-CNN Inception v2 trained on COCO dataset](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md) was recommended as it had higher detection consistency and faster computation speed compared to several pre-trained models being used (specifically Mobilenet v2, Mask R-CNN)
+
 Inception v2 is a convolutional neural network architecture that was introduced in 2016, it uses a combination of 1x1 3x3 and 5x5 convolutions along with pooling layers to capture features at different scales. 
 The architecture also includes batch normalization and residual connections to improve training and performance, Faster R-CNN algorithm combines Inception v2 architecture with a region proposal network and a classifier to perform object detection. 
 The RPN generates proposals for potential object locations, followed by a second stage for classification and bounding box regression. 
-Faster R-CNN was used initially as there were results showing that it had higher detection consistency and faster computation speed compared to several pre-trained models being used.  
 
 
-The following code:
+The following files:
 - multiprocess_object_detect.py
 - object_detector.py
 - simple_object_detect.py
