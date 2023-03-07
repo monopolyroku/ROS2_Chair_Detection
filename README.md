@@ -67,7 +67,10 @@ Run the set of instructions in the README.md in this [repo](https://github.com/t
 3. Use ```colcon build ``` to build the package within the src folder, creating the install, build and log folders in the process
 4. For good measure ``` source ~/.bashrc ``` and ``` source install/setup.bash ``` to refresh the terminal bash file and setup bash file after the new build
 5. Use the command ``` ros2 run chair_detect chair_detect ``` to run the chair_detect node and a window should pop up showing your camera's pov
-
+6. Open a new terminal and use the command ``` ros2 run chair_detect listener ``` to run the listener node and a window should pop up
+7. Open a new terminal and use the command ``` rqt_graph ``` to verify that the publisher subscriber is working like the image below
+<br>
+<img src="rosgraph.png" alt="rqt graph"><br>
 
 ## To take note of during integration
 To be updated.
