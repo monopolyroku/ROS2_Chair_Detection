@@ -41,7 +41,22 @@ Although most pre-trained models can be converted to run with Tensorflow Lite, t
 
 For this project, the Tensorflow Lite implementation forked from this [repo](https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/raspberry_pi) is integrated with ROS2 to publish the information (pose, empty chair lot etc.) from a CCTV camera to the robot.
 
-However, do note that running the same program on different hardware will affect the latency of the program as seen from the images below.
+However, do note that running the same program on different hardware will affect the latency/FPS of the program as seen on the top left hand corner of the images below.
+
+On Raspberry Pi 3 Model B V1.2:
+<img src="https://i.postimg.cc/7Pz0n70H/rpi-raspios.jpg" alt="Slower FPS" width="324" height="275"/>
+
+
+On Lenovo Ideapad 5:
+<img src="https://i.postimg.cc/GpZ947Mk/ideapad-ubuntu20-04.jpg" alt="Slower FPS" width="320" height="240"/>
+
+## Videos: Tensorflow Faster R-CNN Inception V2 and Tensorflow Lite Efficient 
+
+<a href="https://www.youtube.com/watch?v=pLGPopefdiE" target="_blank"><img src="https://i9.ytimg.com/vi/pLGPopefdiE/mqdefault.jpg?sqp=COjomqAG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGFogWihaMA8=&rs=AOn4CLD8h9p6HPTPTYsvTzjag-TW_140sw" 
+alt="Tensorflow: Faster R-CNN Inception V2" width="240" height="180" border="10" /></a>
+
+<a href="https://www.youtube.com/watch?v=SgjVN6L3r1k" target="_blank"><img src="https://i9.ytimg.com/vi/SgjVN6L3r1k/mqdefault.jpg?sqp=CJTrmqAG-oaymwEmCMACELQB8quKqQMa8AEB-AHUBoAC4AOKAgwIABABGH8gEyh6MA8=&rs=AOn4CLCAnZDG6dOWbvKGjlPSDhBcWRI8_A" 
+alt="Tensorflow Lite: Efficient" width="240" height="180" border="10" /></a>
 
 
 ## How to build and run ROS2 src folder 
