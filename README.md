@@ -43,12 +43,12 @@ For this project, the Tensorflow Lite implementation forked from this [repo](htt
 
 However, do note that running the same program on different hardware will affect the latency/FPS of the program as seen on the top left hand corner of the images below.
 
-On Raspberry Pi 3 Model B V1.2:
-<img src="https://i.postimg.cc/7Pz0n70H/rpi-raspios.jpg" alt="Slower FPS" width="324" height="275"/>
+On Raspberry Pi 3 Model B V1.2: <br>
+<img src="https://i.postimg.cc/7Pz0n70H/rpi-raspios.jpg" alt="Slower FPS" width="150" height="115"/><br>
 
 
-On Lenovo Ideapad 5:
-<img src="https://i.postimg.cc/GpZ947Mk/ideapad-ubuntu20-04.jpg" alt="Slower FPS" width="320" height="240"/>
+On Lenovo Ideapad 5: <br>
+<img src="https://i.postimg.cc/GpZ947Mk/ideapad-ubuntu20-04.jpg" alt="Slower FPS" width="150" height="115"/><br>
 
 ## Videos: Tensorflow Faster R-CNN Inception V2 and Tensorflow Lite Efficient 
 
