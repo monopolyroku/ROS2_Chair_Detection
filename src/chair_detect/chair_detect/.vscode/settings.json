@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/niloclol/objdet_ws/install/chair_detect/lib/python3.8/site-packages",
+        "/home/niloclol/turtlebot3_ws/install/turtlebot3_commander/lib/python3.8/site-packages",
+        "/home/niloclol/turtlebot3_ws/install/nav2_simple_commander/lib/python3.8/site-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ]
+}

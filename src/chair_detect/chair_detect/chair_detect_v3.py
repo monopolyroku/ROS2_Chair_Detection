@@ -18,7 +18,7 @@ import time
 import rclpy    
 import numpy as np
 from rclpy.node import Node
-from std_msgs.msg import Int32MultiArray 
+from std_msgs.msg import Int8MultiArray 
 from sensor_msgs.msg import Image
 
 import cv2
@@ -33,32 +33,68 @@ _FONT_THICKNESS = 1
 _TEXT_COLOR = (0, 0, 255)  # red
 
 # Creates a list that will contain detected chairs 
-detected_chairs = []
-# Creates an index 
-idx = 0
+# currently contains fake data
+detected_chairs = [0, 1, 0, 1]
 
 
+
+
+# Class definition for ROS2 publisher
 class ChairDetector(Node):
   
   def __init__(self):
     super().__init__('chair_detector')
-    self.publisher_ = self.create_publisher(Int32MultiArray, 'sod_topic', 10)
+    self.publisher_ = self.create_publisher(Int8MultiArray, 'sod_topic', 10)
     timer_period = 0.5 
     self.timer = self.create_timer(timer_period, self.publishing)
     self.i = 0
   
   def publishing(self): 
     # Publish the coordinates of the detected chairs to a ROS topic
-    for chair in detected_chairs:
-      point_msg = Int32MultiArray()
-      point_msg.x = chair[idx]
-      point_msg.y = chair[idx+1]
-      self.publisher_.publish(point_msg.x)
-      self.publisher_.publish(point_msg.y)
-      self.get_logger().info('Publishing: "%s"' % point_msg.x)
-      self.get_logger().info('Publishing: "%s"' % point_msg.y)
-      idx += 1
-      self.i += 1
+    point_msg = Int8MultiArray()
+
+    # Sets arguments for parsing
+    parser = argparse.ArgumentParser(
+      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+      '--model',
+      help='Path of the object detection model.',
+      required=False,
+      default='/home/niloclol/objdet_ws/src/chair_detect/chair_detect/efficientdet_lite0.tflite')
+    parser.add_argument(
+      '--cameraId', help='Id of camera.', required=False, type=int, default=0)
+    parser.add_argument(
+      '--frameWidth',
+      help='Width of frame to capture from camera.',
+      required=False,
+      type=int,
+      default=640)
+    parser.add_argument(
+      '--frameHeight',
+      help='Height of frame to capture from camera.',
+      required=False,
+      type=int,
+      default=480)
+    parser.add_argument(
+      '--numThreads',
+      help='Number of CPU threads to run the model.',
+      required=False,
+      type=int,
+      default=4)
+    parser.add_argument(
+      '--enableEdgeTPU',
+      help='Whether to run the model on EdgeTPU.',
+      action='store_true',
+      required=False,
+      default=False)
+    args = parser.parse_args()
+    run(args.model, int(args.cameraId), args.frameWidth, args.frameHeight,
+        int(args.numThreads), bool(args.enableEdgeTPU))
+    # Assign values from detected_chairs list to point_msg
+    point_msg.data = detected_chairs
+    self.publisher_.publish(point_msg)
+    # self.get_logger().info('Publishing: "%s"' % point_msg.data)
+    self.i += 1
 
       
 
@@ -67,11 +103,9 @@ def visualize(
     detection_result: processor.DetectionResult,
 ) -> np.ndarray:
     """Draws bounding boxes on the input image and return it.
-
     Args:
         image: The input RGB image.
         detection_result: The list of all "Detection" entities to be visualize.
-
     Returns:
         Image with bounding boxes.
     """
@@ -107,7 +141,6 @@ def visualize(
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
         enable_edgetpu: bool) -> None:
   """Continuously run inference on images acquired from the camera.
-
   Args:
     model: Name of the TFLite object detection model.
     camera_id: The camera id to be passed to OpenCV.
@@ -143,6 +176,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       base_options=base_options, detection_options=detection_options)
   detector = vision.ObjectDetector.create_from_options(options)
 
+
   # Continuously capture images from the camera and run inference
   while cap.isOpened():
     success, image = cap.read()
@@ -166,6 +200,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Draw keypoints and edges on input image
     image = visualize(image, detection_result)
 
+
     # Calculate the FPS
     if counter % fps_avg_frame_count == 0:
       end_time = time.time()
@@ -187,50 +222,14 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   cv2.destroyAllWindows()
 
 
+
 def main():
-  parser = argparse.ArgumentParser(
-      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-  parser.add_argument(
-      '--model',
-      help='Path of the object detection model.',
-      required=False,
-      default='/home/niloclol/objdet_ws/src/chair_detect/chair_detect/efficientdet_lite0.tflite')
-  parser.add_argument(
-      '--cameraId', help='Id of camera.', required=False, type=int, default=0)
-  parser.add_argument(
-      '--frameWidth',
-      help='Width of frame to capture from camera.',
-      required=False,
-      type=int,
-      default=640)
-  parser.add_argument(
-      '--frameHeight',
-      help='Height of frame to capture from camera.',
-      required=False,
-      type=int,
-      default=480)
-  parser.add_argument(
-      '--numThreads',
-      help='Number of CPU threads to run the model.',
-      required=False,
-      type=int,
-      default=4)
-  parser.add_argument(
-      '--enableEdgeTPU',
-      help='Whether to run the model on EdgeTPU.',
-      action='store_true',
-      required=False,
-      default=False)
-  args = parser.parse_args()
-
-  run(args.model, int(args.cameraId), args.frameWidth, args.frameHeight,
-      int(args.numThreads), bool(args.enableEdgeTPU))
   
-  # ROS2 publisher initialization
-  rclpy.init(args=args)
+  # Initialization of ROS2 node
+  rclpy.init()
   chair_detector = ChairDetector()
-  rclpy.spin(chair_detector)
-
+  rclpy.spin(chair_detector)  
+  # Destroys ROS2 node
   chair_detector.destroy_node()
   rclpy.shutdown()
 

@@ -19,7 +19,9 @@ setup(
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [ "chair_detect = chair_detect.chair_detect_v3:main"
+        'console_scripts': [ 
+            'chair_detect = chair_detect.chair_detect_v3:main',
+            'listener = chair_detect.listener:main'
         ],
     },
 )
