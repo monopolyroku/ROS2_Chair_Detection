@@ -52,11 +52,14 @@ On Lenovo Ideapad 5: <br>
 
 ## Videos: Tensorflow Faster R-CNN Inception V2 and Tensorflow Lite Efficient 
 
-<a href="https://www.youtube.com/watch?v=pLGPopefdiE" target="_blank"><img src="https://i9.ytimg.com/vi/pLGPopefdiE/mqdefault.jpg?sqp=COjomqAG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGFogWihaMA8=&rs=AOn4CLD8h9p6HPTPTYsvTzjag-TW_140sw" 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=pLGPopefdiE
+" target="_blank"><img src="http://img.youtube.com/vi/pLGPopefdiE/0.jpg" 
 alt="Tensorflow: Faster R-CNN Inception V2" width="240" height="180" border="10" /></a>
 
-<a href="https://www.youtube.com/watch?v=SgjVN6L3r1k" target="_blank"><img src="https://i9.ytimg.com/vi/SgjVN6L3r1k/mqdefault.jpg?sqp=CJTrmqAG-oaymwEmCMACELQB8quKqQMa8AEB-AHUBoAC4AOKAgwIABABGH8gEyh6MA8=&rs=AOn4CLCAnZDG6dOWbvKGjlPSDhBcWRI8_A" 
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=SgjVN6L3r1k
+" target="_blank"><img src="http://img.youtube.com/vi/SgjVN6L3r1k/0.jpg" 
 alt="Tensorflow Lite: Efficient" width="240" height="180" border="10" /></a>
+
 
 
 ## How to build and run ROS2 src folder 
